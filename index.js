@@ -4,6 +4,7 @@ const app = express();
 
 require("./config/config")
 
+
 //CONECTAMOS CON LA BBDD
 const mongoose = require("mongoose");
 
@@ -13,10 +14,10 @@ mongoose.connect(uri, option)
 .then(()=> console.log("BBDD conectada"))
 .catch(e=> console.log("error db:", e));
 
+
 //Para hacer uso del body
 const bodyparse = require("body-parser");
 
-//  require ("dotenv").config();
 
 app.use(bodyparse.urlencoded({extended:false}));
 app.use(bodyparse.json());
@@ -30,8 +31,6 @@ const { required } = require("@hapi/joi");
 
 //ROUTES MIDDLEWARES
 app.use("/api/user", authRoutes);
-
-
 
 
 

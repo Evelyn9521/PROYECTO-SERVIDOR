@@ -38,7 +38,7 @@ router.post("/login", async(req, res)=>{
     //jwt
     const token = jwt.sign(
         {user: user.name,
-        expiresIn: 20
+        expiresIn: 60 * 60 * 24
         },process.env.SEED);
     
         res.json({
@@ -90,9 +90,6 @@ router.post("/register", async(req, res)=>{
 
   
 });
-
-
-
 
 
 
