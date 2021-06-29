@@ -2,13 +2,13 @@ const router = require("express").Router();
 
 const User = require("../models/User");
 
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt"); //encriptar la contraseña
 
 const jwt = require("jsonwebtoken");
 
 require("../config/config")
 
-const joi = require("@hapi/joi");
+const joi = require("@hapi/joi"); //validar datos
 const schemaRegister = joi.object({
     name: joi.string().min(3).max(120).required(),
     lastname: joi.string().min(3).max(120).required(),
@@ -24,50 +24,50 @@ const schemaLogin = joi.object({
 
 
 //LOGIN
-router.post("/login", async(req, res)=>{
+router.post("/login", async (req, res) => {
 
-    const {error} = schemaLogin.validate(req.body)
-    if (error) return res.status(400).json({error: error.details[0].message})
-    
-    const user = await User.findOne({email: req.body.email})
-    if(!user) return res.status(400).json({error: true, message: "email incorrecto"})
+    const { error } = schemaLogin.validate(req.body)
+    if (error) return res.status(400).json({ error: error.details[0].message })
+
+    const user = await User.findOne({ email: req.body.email })
+    if (!user) return res.status(400).json({ error: true, message: "email incorrecto" })
 
     const passValida = await bcrypt.compare(req.body.password, user.password)
-    if(!passValida) return res.status(400).json({error: true, message: "contraseña incorrecta"})
+    if (!passValida) return res.status(400).json({ error: true, message: "contraseña incorrecta" })
 
     //jwt
     const token = jwt.sign(
-        {user: user.name,
-        expiresIn: 60 * 60 * 24
-        },process.env.SEED);
-    
-        res.json({
-            error: null,
-            message: "Bienvenido",
-            token: token
-        })
+        {
+            user: user.name,
+            expiresIn: 60 * 60 * 24
+        }, process.env.SEED);
+
+    res.json({
+        error: null,
+        message: "Bienvenido",
+        token: token
+    })
 })
 
 
 
-
 //REGISTRO DE USUARIOS
-router.post("/register", async(req, res)=>{
+router.post("/register", async (req, res) => {
 
     //Validaciones de usuario
-    const {error} = schemaRegister.validate(req.body)
-    if (error){
-        return res.status(400).json({error: error.details[0].message})
+    const { error } = schemaRegister.validate(req.body)
+    if (error) {
+        return res.status(400).json({ error: error.details[0].message })
     }
 
-    const existeEmail = await User.findOne({email: req.body.email})
-    if(existeEmail) return res.status(400).json({error: true, message: "email ya registrado"})
-  
+    const existeEmail = await User.findOne({ email: req.body.email })
+    if (existeEmail) return res.status(400).json({ error: true, message: "email ya registrado" })
+
 
 
     //Encriptamos contraseñas
-     const saltos = await bcrypt.genSalt(10);
-     const password = await bcrypt.hash(req.body.password, saltos)
+    const saltos = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(req.body.password, saltos)
 
 
     const user = new User({
@@ -80,17 +80,61 @@ router.post("/register", async(req, res)=>{
     try {
         const userDB = await user.save();
         res.json({
-            error:null,
+            error: null,
             data: userDB
         })
-        
+
     } catch (error) {
         res.status(400).json(error)
     }
 
-  
+
+});
+
+
+//ACTUALIZAR DE USUARIOS
+router.put("/:id", (req, res) => {
+    const id = req.params.id;
+    const body = ramda.pick(["username", "email"], req.body);
+
+    User.findByIdAndUpdate(
+        id,
+        body,
+        { new: true, runValidators: true, context: 'query' }, // options
+        (error, updatedUser) => {
+            if (error) {
+                res.status(400).json({ ok: false, error });
+            } else {
+                res.status(200).json({ ok: true, updatedUser });
+            }
+        }
+    )
+    });
+
+//ELIMINAR USUARIOS
+router.delete("/:id", (req, res) => {
+    const id = req.params.id;
+
+
+    User.findByIdAndUpdate(
+        id,
+        {active: false},
+        { new: true, runValidators: true, context: 'query' }, // options
+        (error, updatedUser) => {
+            if(error) {
+                res.status(400).json({ok: false, error});
+
+            } else if (!updatedUser){
+                res.status(400).json({ok: false, error: "Usuario no encontrado"});
+                
+            } else {
+                res.status(200).json({ok: true, updatedUser});
+            }
+        }
+    );
 });
 
 
 
-module.exports = router;
+
+    module.exports = router;

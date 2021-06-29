@@ -1,6 +1,7 @@
 //INICIALIZAMOS EXPRESS
 const express = require("express");
 const app = express();
+const cors = require("cors");
 
 require("./config/config")
 
@@ -15,23 +16,19 @@ mongoose.connect(uri, option)
 .catch(e=> console.log("error db:", e));
 
 
-//Para hacer uso del body
+//HACEMOS USO DEL BODY, RUTAS MIDDLEWARES
 const bodyparse = require("body-parser");
-
 
 app.use(bodyparse.urlencoded({extended:false}));
 app.use(bodyparse.json());
+app.use(cors());
 
 
 //IMPORTAMOS RUTAS
 const authRoutes = require("./routes/auth");
 const { required } = require("@hapi/joi");
 
-
-
-//ROUTES MIDDLEWARES
 app.use("/api/user", authRoutes);
-
 
 
 
