@@ -9,7 +9,7 @@ require("./config/config")
 //CONECTAMOS CON LA BBDD
 const mongoose = require("mongoose");
 
-const uri = "mongodb://localhost/chat";
+const uri = "mongodb://localhost/proyect";
 const option = {useNewUrlParser:true, useUnifiedTopology:true};
 mongoose.connect(uri, option)
 .then(()=> console.log("BBDD conectada"))
@@ -28,7 +28,7 @@ app.use(cors());
 const authRoutes = require("./routes/auth");
 const { required } = require("@hapi/joi");
 
-app.use("/api/user", authRoutes);
+app.use("/api", authRoutes);
 
 
 

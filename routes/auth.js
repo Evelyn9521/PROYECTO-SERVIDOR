@@ -6,6 +6,8 @@ const bcrypt = require("bcrypt"); //encriptar la contraseña
 
 const jwt = require("jsonwebtoken");
 
+const ramda = require("ramda");
+
 require("../config/config")
 
 const joi = require("@hapi/joi"); //validar datos
@@ -50,7 +52,6 @@ router.post("/login", async (req, res) => {
 })
 
 
-
 //REGISTRO DE USUARIOS
 router.post("/register", async (req, res) => {
 
@@ -92,7 +93,7 @@ router.post("/register", async (req, res) => {
 });
 
 
-//ACTUALIZAR DE USUARIOS
+//ACTUALIZAR USUARIOS
 router.put("/:id", (req, res) => {
     const id = req.params.id;
     const body = ramda.pick(["username", "email"], req.body);
