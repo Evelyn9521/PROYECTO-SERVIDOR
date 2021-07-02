@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const recipesSchema = mongoose.Schema({
-    photo: {
+    image: {
         type: String
     },
 
@@ -13,10 +13,6 @@ const recipesSchema = mongoose.Schema({
         type: String,
     },
 
-    date: {
-        type: Date,
-        default: Date.now
-    },
 
 });
 

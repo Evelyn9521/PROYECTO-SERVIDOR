@@ -95,8 +95,9 @@ router.post("/register", async (req, res) => {
 
 //ACTUALIZAR USUARIOS
 router.put("/:id", (req, res) => {
+  
     const id = req.params.id;
-    const body = ramda.pick(["username", "email"], req.body);
+    const body = ramda.pick(["name", "lastname", "password"], req.body);
 
     User.findByIdAndUpdate(
         id,
@@ -110,29 +111,25 @@ router.put("/:id", (req, res) => {
             }
         }
     )
-    });
+     });
 
 //ELIMINAR USUARIOS
 router.delete("/:id", (req, res) => {
     const id = req.params.id;
+    
+    console.log(id);
 
+    User.findByIdAndDelete(id, {}, (error, removedUser) => {
+        if(error) {
+            res.status(400).json({ok: false, error});
 
-    User.findByIdAndUpdate(
-        id,
-        {active: false},
-        { new: true, runValidators: true, context: 'query' }, // options
-        (error, updatedUser) => {
-            if(error) {
-                res.status(400).json({ok: false, error});
-
-            } else if (!updatedUser){
-                res.status(400).json({ok: false, error: "Usuario no encontrado"});
-                
-            } else {
-                res.status(200).json({ok: true, updatedUser});
-            }
+        } else if (!removedUser){
+            res.status(400).json({ok: false, error: "Usuario no encontrado"});
+            
+        } else {
+            res.status(204).json({ok: true, removedUser});
         }
-    );
+    })
 });
 
 
