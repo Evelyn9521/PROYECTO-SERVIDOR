@@ -37,7 +37,8 @@ router.post("/login", async (req, res) => {
     const passValida = await bcrypt.compare(req.body.password, user.password)
     if (!passValida) return res.status(400).json({ error: true, message: "contraseña incorrecta" })
 
-    //jwt
+
+    jwt
     const token = jwt.sign(
         {
             user: user.name,
@@ -47,8 +48,9 @@ router.post("/login", async (req, res) => {
     res.json({
         error: null,
         message: "Bienvenido",
-        token: token
-    })
+        token: token,
+        user: user
+    }) 
 })
 
 
@@ -94,7 +96,7 @@ router.post("/register", async (req, res) => {
 
 
 //ACTUALIZAR USUARIOS
-router.put("/:id", (req, res) => {
+router.put("/edit", (req, res) => {
   
     const id = req.params.id;
     const body = ramda.pick(["name", "lastname", "password"], req.body);
@@ -114,7 +116,7 @@ router.put("/:id", (req, res) => {
      });
 
 //ELIMINAR USUARIOS
-router.delete("/:id", (req, res) => {
+router.delete("/delete", (req, res) => {
     const id = req.params.id;
     
     console.log(id);
@@ -135,4 +137,4 @@ router.delete("/:id", (req, res) => {
 
 
 
-    module.exports = router;
+module.exports = router;
