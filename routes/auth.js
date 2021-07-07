@@ -12,8 +12,8 @@ require("../config/config")
 
 const joi = require("@hapi/joi"); //validar datos
 const schemaRegister = joi.object({
-    name: joi.string().min(3).max(120).required(),
-    lastname: joi.string().min(3).max(120).required(),
+    name: joi.string().max(120).required(),
+    lastname: joi.string().max(120).required(),
     email: joi.string().min(6).max(120).required().email(),
     password: joi.string().min(8).max(1024).required()
 })
@@ -96,10 +96,11 @@ router.post("/register", async (req, res) => {
 
 
 //ACTUALIZAR USUARIOS
-router.put("/edit", (req, res) => {
-  
+router.put("/edit/:id", (req, res) => {
+    
     const id = req.params.id;
-    const body = ramda.pick(["name", "lastname", "password"], req.body);
+ 
+    const body = ramda.pick(["name", "lastname"], req.body);
 
     User.findByIdAndUpdate(
         id,
@@ -116,10 +117,10 @@ router.put("/edit", (req, res) => {
      });
 
 //ELIMINAR USUARIOS
-router.delete("/delete", (req, res) => {
+router.delete("/delete:id", (req, res) => {
     const id = req.params.id;
     
-    console.log(id);
+   
 
     User.findByIdAndDelete(id, {}, (error, removedUser) => {
         if(error) {
