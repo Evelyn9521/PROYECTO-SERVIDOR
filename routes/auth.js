@@ -120,7 +120,7 @@ router.put("/edit/:id", (req, res) => {
 router.delete("/delete:id", (req, res) => {
     const id = req.params.id;
     
-   
+    console.log(id);
 
     User.findByIdAndDelete(id, {}, (error, removedUser) => {
         if(error) {
