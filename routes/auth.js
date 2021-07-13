@@ -117,7 +117,7 @@ router.put("/edit/:id", (req, res) => {
      });
 
 //ELIMINAR USUARIOS
-router.delete("/delete:id", (req, res) => {
+router.delete("/delete/:id", (req, res) => {
     const id = req.params.id;
     
     console.log(id);
