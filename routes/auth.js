@@ -130,7 +130,7 @@ router.delete("/delete/:id", (req, res) => {
             res.status(400).json({ok: false, error: "Usuario no encontrado"});
             
         } else {
-            res.status(204).json({ok: true, removedUser});
+            res.status(204).json({ok: true, removedUser: removedUser});
         }
     })
 });

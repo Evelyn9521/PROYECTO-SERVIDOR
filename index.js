@@ -11,7 +11,11 @@ const http = require('http'); //es necesario para conectarnos con socket.io
 const appSocket = express();
 const servidor = http.createServer(appSocket);
 const socketio = require("socket.io");
-const io = socketio(servidor);
+const io = socketio(servidor, {
+  cors:{
+    origin:"*"
+  }
+});
 
 //CONECTAMOS CON LA BBDD
 const mongoose = require("mongoose");
