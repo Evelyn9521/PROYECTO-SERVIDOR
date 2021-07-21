@@ -72,7 +72,10 @@ io.on("connection", (socket) => {
   });
 
    socket.on("nuevoUsuario", (user) => {
-    connectedUsers.push(user)
+    if(connectedUsers.indexOf(user) == -1){
+      connectedUsers.push(user)
+    }
+
     io.emit("conectados", 
      connectedUsers
     );
