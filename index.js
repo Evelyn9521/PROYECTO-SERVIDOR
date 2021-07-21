@@ -45,9 +45,15 @@ const { required } = require("@hapi/joi");
 app.use("/api", authRoutes);
 app.use("/api2", recipes);
 
+
+
 app.listen(process.env.PORT, ()=>{
     console.log(`servidor andando en el puerto: ${process.env.PORT}`);
 })
+
+
+
+ let connectedUsers = [];
 
 // Gestión de socket
 //ESTABLECEMOS LA CONEXIÓN A SOCKET PARA EL CHAT
@@ -56,6 +62,7 @@ io.on("connection", (socket) => {
 
   socket.on("conectado", (nomb) => {
     console.log("conectado");
+   
     nombre = nomb;
     //socket.broadcast.emit manda el mensaje a todos los clientes excepto al que ha enviado el mensaje
     socket.broadcast.emit("mensajes", {
@@ -63,6 +70,16 @@ io.on("connection", (socket) => {
       mensaje: `${nombre} ha entrado en la sala del chat`,
     });
   });
+
+   socket.on("nuevoUsuario", (user) => {
+    connectedUsers.push(user)
+    io.emit("conectados", 
+     connectedUsers
+    );
+
+    // console.log(connectedUsers);
+  })
+
 
   socket.on("mensaje", (nombre, mensaje) => {
     //io.emit manda el mensaje a todos los clientes conectados al chat
